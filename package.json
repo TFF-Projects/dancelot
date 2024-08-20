@@ -1,0 +1,31 @@
+{
+  "name": "dancelot",
+  "version": "1.0.0",
+  "description": "App that tracks and grades users' dance poses based on a preset dance video",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TFF-Projects/dancelot.git"
+  },
+  "keywords": [
+    "dance",
+    "poses",
+    "mediapipe",
+    "movement"
+  ],
+  "author": "Rukaiya Khondaker, Sani Abubakar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TFF-Projects/dancelot/issues"
+  },
+  "homepage": "https://github.com/TFF-Projects/dancelot#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "eslint": "^9.9.0",
+    "express": "^4.19.2",
+    "nodemon": "^3.1.4"
+  }
+}
