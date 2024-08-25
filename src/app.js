@@ -1,3 +1,5 @@
+
+/*
 var http = require("http");
 var url = require("url");
 var fs = require("fs");
@@ -15,3 +17,22 @@ http.createServer(function (req, res) {
         return res.end();
     });    
 }).listen(3000);
+*/
+
+const express = require("express");
+const path = require("path");
+const port = 3000;
+const app = express();
+
+const home = require("./routes/home-router");
+const posegen = require("./routes/pose-gen-router");
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+app.use(home);
+app.use(posegen);
+
+app.listen(port, () => {
+    console.log("listening on http://localhost:3000");
+});

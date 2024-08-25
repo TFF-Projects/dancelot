@@ -26,10 +26,13 @@
   "homepage": "https://github.com/TFF-Projects/dancelot#readme",
   "dependencies": {
     "@mediapipe/tasks-vision": "^0.10.14",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
     "eslint": "^9.9.0",
     "express": "^4.19.2",
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "ytdl-core": "^4.11.5"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
