@@ -7,5 +7,5 @@ module.exports.getDownload = (req, res) => {
     
     ytdl(URL, {
         format: "mp4"
-    }).pipe(fs.createWriteStream("video.mp4"));
+    }).pipe(fs.createWriteStream("src/models/videos/video.mp4"));
 };

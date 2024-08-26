@@ -22,7 +22,6 @@ http.createServer(function (req, res) {
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
-const ytdl = require("ytdl-core");
 const port = 3000;
 const app = express();
 
