@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/TFF-Projects/dancelot#readme",
   "dependencies": {
+    "@distube/ytdl-core": "^4.14.4",
     "@mediapipe/tasks-vision": "^0.10.14",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
