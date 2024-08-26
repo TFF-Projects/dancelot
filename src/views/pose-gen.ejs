@@ -7,9 +7,25 @@
     <body>
         <h1 class="heading">Welcome to Dancelot's Pose Generation!</h1>
         <input class = "URL-input" placeholder="Enter a video URL e.g., https://www.youtube.com/watch?v=hPt1gUE1zAc">
-        <button class="submit-url-btn">Submit</button> 
+        <button class="submit-url-btn">Submit</button>
+        <script>
+            var submit_URL_btn = document.querySelector(".submit-url-btn");
+            var URLinput = document.querySelector(".URL-input");
+
+            submit_URL_btn.addEventListener("click", () => {
+                console.log("URL: ${URLinput.value}");
+                //sendURL(URLinput.value);
+            })
+
+            /*function sendURL(URL) {
+                // stuff
+                window.location.href = "http://localhost:3000/download?URL=${URL}";
+            }*/
+        </script>
     </body>
 </html>
+
+
 
 
 
