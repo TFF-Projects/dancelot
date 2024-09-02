@@ -25,7 +25,7 @@ const createPoseLandmarker = async () => {
     const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm");
     poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
         baseOptions: {
-            modelAssetPath: `/pose_landmarker_lite.task`,
+            modelAssetPath: `/js/pose_landmarker_lite.task`,
             delegate: "GPU"
         },
         runningMode: runningMode,
