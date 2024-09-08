@@ -19,7 +19,6 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public")));
 app.use('/models', express.static(path.join(__dirname, 'src', 'models')));
 
-
 app.use(home);
 app.use(posegen);
 app.use(download);
