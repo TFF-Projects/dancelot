@@ -33,7 +33,7 @@ module.exports.getDownload = (req, res) => {
         format: "mp4"
     }).pipe(fs.createWriteStream("src/models/videos/video.mp4"));
 
-    runPythonPoseSeq("src/pose-sequence.py", ["src/models/videos/video.mp4"], (err, result) => {
+    runPythonPoseSeq("src/pose-sequence.py", [], (err, result) => {
         if (err) {
             res.status(500).send(err);
         } else {
