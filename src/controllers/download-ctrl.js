@@ -27,7 +27,7 @@ function runPythonPoseSeq(scriptPath, args, callback) {
 
 module.exports.getDownload = (req, res) => {
     var URL = req.query.URL;
-    res.send(`Downloaded ${URL}!`);
+    //res.send(`Downloaded ${URL}!`);
 
     ytdl(URL, {
         format: "mp4"
