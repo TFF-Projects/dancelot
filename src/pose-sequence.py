@@ -56,7 +56,7 @@ def processVideoPerFrame(path):
     fps = cap.get(cv2.CAP_PROP_FPS)
     ret = True
     frame_count = 0
-    landmarkFile = open("src/models/landmarks.txt", "w")
+    landmarkFile = open("src/models/landmarks_test.txt", "w")
     while ret:
         ret, frame = cap.read()
         if not ret:

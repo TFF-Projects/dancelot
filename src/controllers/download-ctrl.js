@@ -1,6 +1,7 @@
 const ytdl = require("@distube/ytdl-core");
 const fs = require("fs");
 const { spawn } = require("child_process");
+const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
 
 function runPythonPoseSeq(scriptPath, args, callback) {
     const pythonProcess = spawn('python', [scriptPath].concat(args));
@@ -25,13 +26,15 @@ function runPythonPoseSeq(scriptPath, args, callback) {
     });
 }
 
-module.exports.getDownload = (req, res) => {
+module.exports.getDownload = async (req, res) => {
     var URL = req.query.URL;
-    //res.send(`Downloaded ${URL}!`);
 
     ytdl(URL, {
         format: "mp4"
     }).pipe(fs.createWriteStream("src/models/videos/video.mp4"));
+
+    //res.send(`Downloaded ${URL}!`);
+    await sleep(5000);
 
     runPythonPoseSeq("src/pose-sequence.py", [], (err, result) => {
         if (err) {
