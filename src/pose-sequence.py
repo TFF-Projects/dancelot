@@ -3,8 +3,7 @@ import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 import cv2
-import numpy as np
-import sys
+import pandas as pd
 
 # Initialising variables
 model_path = "src/models/pose_landmarker_lite.task"
@@ -52,11 +51,15 @@ def findPoseLandmarks(frame):
 ## Find pose landmarks for each frame of video
 
 def processVideoPerFrame(path):
+    # Initialise local variables
     cap = cv2.VideoCapture(path)
     fps = cap.get(cv2.CAP_PROP_FPS)
     ret = True
     frame_count = 0
-    landmarkFile = open("src/models/landmarks_test.txt", "w")
+    
+    frames_df = pd.DataFrame()
+
+    # Loop over each frame
     while ret:
         ret, frame = cap.read()
         if not ret:
@@ -68,13 +71,25 @@ def processVideoPerFrame(path):
         # Run pose detection on current frame
         poseLandmarks = findPoseLandmarks(frame)
         if poseLandmarks and poseLandmarks.pose_landmarks:
-            # print(f"Pose landmarks for frame {frame_count}: {poseLandmarks.pose_landmarks}")
-            landmarkFile.write(f"Pose Landmarks for frame {frame_count}: \n {poseLandmarks.pose_landmarks} \n")
+            landmark_list = []
+            landmark_count = 1
+            for landmark in poseLandmarks.pose_landmarks:
+                frame_dict = {
+                    "frame": frame_count,
+                    "landmark": landmark_count,
+                    "x": landmark[0].x,
+                    "y": landmark[0].y,
+                    "z": landmark[0].z,
+                    "visibility": landmark[0].visibility
+                }
+                landmark_list.append(frame_dict)
+            frame_df = pd.DataFrame(landmark_list)
+            frames_df = pd.concat([frames_df, frame_df], ignore_index=True)
+
 
         frame_count += 1
     cap.release()
-    landmarkFile.close()
-    return
+    return frames_df
     
 
 # Execute code with path to video, getting it to the Node.js server
@@ -85,4 +100,9 @@ def processVideoPerFrame(path):
 
 #print(makePoseSequence("src/models/videos/video.mp4"))
 
-processVideoPerFrame("src/models/videos/video.mp4")
+
+landmarkFile = open("src/models/landmarks_test.txt", "w")
+landmark_db = processVideoPerFrame("src/models/videos/video.mp4")
+landmarkFile.write(str(landmark_db.head()))
+landmarkFile.write(f"\n {len(landmark_db)}")
+landmarkFile.close()
