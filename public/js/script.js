@@ -35,6 +35,24 @@ const createPoseLandmarker = async () => {
 };
 createPoseLandmarker();
 
+// Function to send back JSON data
+function sendPoseJSON(data) {
+    fetch('http://localhost:3000/realtime-detection', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log('Success:', result);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
 /********************************************************************
 // Demo 2: Continuously grab image from webcam stream and detect it.
 ********************************************************************/
@@ -95,12 +113,22 @@ async function predictWebcam() {
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
             console.log(result.landmarks);
+            let landmark_count = 0;
             for (const landmark of result.landmarks) {
                 drawingUtils.drawLandmarks(landmark, {
                     radius: (data) => DrawingUtils.lerp(data.from.z, -0.15, 0.1, 5, 1)
                 });
                 drawingUtils.drawConnectors(landmark, PoseLandmarker.POSE_CONNECTIONS);
-                
+                let landmarks_data = {
+                    "system-time": video.currentTime,
+                    "landmark": landmark_count,
+                    "x": landmark.x,
+                    "y": landmark.y,
+                    "z": landmark.z,
+                    "visibility": landmark.visibility
+                };
+                sendPoseJSON(landmarks_data);
+                landmark_count += 1;
             }
             canvasCtx.restore();
         });
