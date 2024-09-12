@@ -1,6 +1,5 @@
 # Imports
 import mediapipe as mp
-from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 import cv2
 import pandas as pd
@@ -11,36 +10,48 @@ BaseOptions = mp.tasks.BaseOptions
 PoseLandmarker = mp.tasks.vision.PoseLandmarker
 PoseLandmarkerOptions = mp.tasks.vision.PoseLandmarkerOptions
 VisionRunningMode = mp.tasks.vision.RunningMode
+all_landmark_names = ["nose", 
+                  "inner left eye",
+                  "left eye",
+                  "outer left eye",
+                  "inner right eye",
+                  "right eye",
+                  "outer right eye",
+                  "left ear",
+                  "right ear",
+                  "left of mouth",
+                  "right of mouth",
+                  "left shoulder",
+                  "right shoulder",
+                  "left elbow",
+                  "right elbow",
+                  "left wrist",
+                  "right wrist",
+                  "left pinky",
+                  "right pinky",
+                  "left index",
+                  "right index",
+                  "left thumb",
+                  "right thumb",
+                  "left hip",
+                  "right hip",
+                  "left knee",
+                  "right knee",
+                  "left ankle",
+                  "right ankle",
+                  "left heel",
+                  "right heel",
+                  "left foot index",
+                  "right foot index"
+                  ]
+video_path = "src/models/videos/video.mp4"
 
 # Creating a pose landmarker instance with the video mode
 options = PoseLandmarkerOptions(
     base_options=BaseOptions(model_asset_path=model_path), 
     running_mode=VisionRunningMode.IMAGE)
 
-## Turn the video frames into numpy arrays 
-
-# def videoToNumpy(path):
-#     frames = []
-#     cap = cv2.VideoCapture(path)
-#     fps = cap.get(cv2.CAP_PROP_FPS)
-#     ret = True
-#     while ret:
-#         ret, img = cap.read() # reads one frame from the capture object
-#         #print(ret)
-#         if ret:
-#             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-#             frames.append(img)
-#             #print(img)
-#     return np.stack(frames, axis=0), fps
-            
 ## With initialised landmarker, generate coordinates based on video frames
-
-# def makePoseSequence(path):
-#     detector = vision.PoseLandmarker.create_from_options(options)
-#     np_video_arr, fps = videoToNumpy(path)
-#     mp_video = mp.Image(image_format=mp.ImageFormat.SRGB, data = np_video_arr)
-#     result = detector.detect_for_video(mp_video, fps)
-#     return result
 
 def findPoseLandmarks(frame):
     detector = vision.PoseLandmarker.create_from_options(options)
@@ -69,40 +80,34 @@ def processVideoPerFrame(path):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         # Run pose detection on current frame
-        poseLandmarks = findPoseLandmarks(frame)
-        if poseLandmarks and poseLandmarks.pose_landmarks:
+        frameLandmarks = findPoseLandmarks(frame)
+        if frameLandmarks and frameLandmarks.pose_landmarks:
             landmark_list = []
-            landmark_count = 1
-            for landmark in poseLandmarks.pose_landmarks:
+            landmark_count = 0
+            player1_list = frameLandmarks.pose_landmarks[0]
+            for landmark in player1_list:
                 frame_dict = {
                     "frame": frame_count,
-                    "landmark": landmark_count,
-                    "x": landmark[0].x,
-                    "y": landmark[0].y,
-                    "z": landmark[0].z,
-                    "visibility": landmark[0].visibility
+                    "landmark": all_landmark_names[landmark_count],
+                    "x": landmark.x,
+                    "y": landmark.y,
+                    "z": landmark.z,
+                    "visibility": landmark.visibility
                 }
                 landmark_list.append(frame_dict)
+                landmark_count += 1
             frame_df = pd.DataFrame(landmark_list)
             frames_df = pd.concat([frames_df, frame_df], ignore_index=True)
-
 
         frame_count += 1
     cap.release()
     return frames_df
     
 
-# Execute code with path to video, getting it to the Node.js server
-# if __name__ == "__main__":
-#     path = str(sys.argv[1])
-#     print(makePoseSequence(path))
-#     sys.stdout.flush()
-
-#print(makePoseSequence("src/models/videos/video.mp4"))
-
+## Execute code with path to video
 
 landmarkFile = open("src/models/landmarks_test.txt", "w")
-landmark_db = processVideoPerFrame("src/models/videos/video.mp4")
-landmarkFile.write(str(landmark_db.head()))
+landmark_db = processVideoPerFrame(video_path)
+landmarkFile.write(landmark_db.to_string())
 landmarkFile.write(f"\n {len(landmark_db)}")
 landmarkFile.close()
