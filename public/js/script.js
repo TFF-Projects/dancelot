@@ -18,6 +18,8 @@ let enableWebcamButton;
 let webcamRunning = false;
 const videoHeight = "360px";
 const videoWidth = "480px";
+let accumulatedLandmarks = [];
+
 // Before we can use PoseLandmarker class we must wait for it to finish
 // loading. Machine Learning models can be large and take a moment to
 // get everything needed to run.
@@ -36,21 +38,27 @@ const createPoseLandmarker = async () => {
 createPoseLandmarker();
 
 // Function to send back JSON data
-function sendPoseJSON(data) {
-    fetch('http://localhost:3000/realtime-detection', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        console.log('Success:', result);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+function sendAccumulatedPoseJSON() {
+    if (accumulatedLandmarks.length > 0) {
+        fetch("http://localhost:3000/realtime-detection", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ landmarks: accumulatedLandmarks })
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log("Success:", result);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+
+        accumulatedLandmarks = [];
+    } else {
+        console.log("No landmarks to send.")
+    }
 }
 
 /********************************************************************
@@ -80,6 +88,8 @@ function enableCam(event) {
     if (webcamRunning === true) {
         webcamRunning = false;
         enableWebcamButton.innerText = "ENABLE PREDICTIONS";
+
+        sendAccumulatedPoseJSON();
     }
     else {
         webcamRunning = true;
@@ -113,12 +123,17 @@ async function predictWebcam() {
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
             console.log(result.landmarks);
-            let landmark_count = 0;
-            for (const landmark of result.landmarks) {
-                drawingUtils.drawLandmarks(landmark, {
+
+            for (const landmark_set of result.landmarks) {
+                drawingUtils.drawLandmarks(landmark_set, {
                     radius: (data) => DrawingUtils.lerp(data.from.z, -0.15, 0.1, 5, 1)
                 });
-                drawingUtils.drawConnectors(landmark, PoseLandmarker.POSE_CONNECTIONS);
+                drawingUtils.drawConnectors(landmark_set, PoseLandmarker.POSE_CONNECTIONS);
+            }
+
+            let player1_landmarks = result.landmarks[0];
+            let landmark_count = 0;
+            for (const landmark of player1_landmarks) {
                 let landmarks_data = {
                     "system-time": video.currentTime,
                     "landmark": landmark_count,
@@ -127,7 +142,7 @@ async function predictWebcam() {
                     "z": landmark.z,
                     "visibility": landmark.visibility
                 };
-                sendPoseJSON(landmarks_data);
+                accumulatedLandmarks.push(landmarks_data);
                 landmark_count += 1;
             }
             canvasCtx.restore();
