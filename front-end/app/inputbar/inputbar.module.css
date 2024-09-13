@@ -1,3 +1,34 @@
-.inputbar {
-    
+.inputGroup {
+    appearance: none;
+    padding: 0.8em;
+    background-color: transparent;
+    border: 2px solid #aa001a;
+    border-radius: 20px;
+    width: 100%;
+    outline: none;
+    font-size: 100%;
+    box-sizing: border-box;
 }
+
+.header {
+    text-align: center;
+}
+
+.button {
+    position: relative;
+    border: none;
+    background: transparent;
+    padding: 5%;
+    cursor: pointer;
+}
+
+.front {
+    display: block;
+    position: relative;
+    padding: 12px 27px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    color: #f4f4f4;
+    background: #dd2e44;
+}
+

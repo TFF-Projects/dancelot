@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import axios from 'axios';
+import styles from "./inputbar.module.css";
 
 export default function InputBar() {
 
@@ -17,16 +18,18 @@ export default function InputBar() {
         axios.get(`http://localhost:4000/download?URL=${fieldDict.URL}`)
     }
 
+
     return (
-        <div className="inputbar">
-            <input 
-                className= "URL-input" 
-                placeholder="Enter a video URL e.g., https://www.youtube.com/watch?v=hPt1gUE1zAc"  
+        <div>
+            <h1 className={styles.header}>Enter a YouTube URL to get started!</h1>
+            <input className={styles.inputGroup} placeholder="Enter URL here..."
                 onInput={e => {
                         setFieldDict(prevFieldDict => ({...prevFieldDict, URL: e.target.value}));
                 }}
             />
-            <button onClick={() => sendURL()}>Submit</button>
+            <button className={styles.button} onClick={() => sendURL()}>
+                <span className={styles.front}> Go! </span>
+            </button>
         </div>
     );
 }

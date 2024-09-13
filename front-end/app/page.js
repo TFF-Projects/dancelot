@@ -8,7 +8,6 @@ export default function Home() {
     <div className={styles.page}>
       <main>
         <div className={styles.input}>
-          <h1>Enter a YouTube URL to get started!</h1>
           <div className={styles.inputbardiv}>
             <InputBar className={styles.inputbar}/>
           </div>
