@@ -64,7 +64,7 @@ module.exports.getDownload = async (req, res) => {
     //res.send(`Downloaded ${URL}!`);
     await sleep(30000);
 
-    runPythonPoseSeq("src/pose-sequence.py", [], (err, result) => {
+    runPythonPoseSeq("src/pose-sequencing.py", [], (err, result) => {
         if (err) {
             res.status(500).send(err);
         } else {

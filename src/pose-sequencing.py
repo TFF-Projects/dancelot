@@ -45,6 +45,7 @@ all_landmark_names = ["nose",
                   "right foot index"
                   ]
 video_path = "src/models/videos/video.mp4"
+landmark_path = "src/models/landmarks_test.txt"
 
 # Creating a pose landmarker instance with the video mode
 options = PoseLandmarkerOptions(
@@ -53,7 +54,7 @@ options = PoseLandmarkerOptions(
 
 ## With initialised landmarker, generate coordinates based on video frames
 
-def findPoseLandmarks(frame):
+def find_pose_landmarks(frame):
     detector = vision.PoseLandmarker.create_from_options(options)
     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data = frame)
     result = detector.detect(mp_image)
@@ -61,7 +62,7 @@ def findPoseLandmarks(frame):
 
 ## Find pose landmarks for each frame of video
 
-def processVideoPerFrame(path):
+def process_video_per_frame(path):
     # Initialise local variables
     cap = cv2.VideoCapture(path)
     fps = cap.get(cv2.CAP_PROP_FPS)
@@ -80,11 +81,11 @@ def processVideoPerFrame(path):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         # Run pose detection on current frame
-        frameLandmarks = findPoseLandmarks(frame)
-        if frameLandmarks and frameLandmarks.pose_landmarks:
+        frame_landmarks = find_pose_landmarks(frame)
+        if frame_landmarks and frame_landmarks.pose_landmarks:
             landmark_list = []
             landmark_count = 0
-            player1_list = frameLandmarks.pose_landmarks[0]
+            player1_list = frame_landmarks.pose_landmarks[0]
             for landmark in player1_list:
                 frame_dict = {
                     "frame": frame_count,
@@ -106,8 +107,8 @@ def processVideoPerFrame(path):
 
 ## Execute code with path to video
 
-landmarkFile = open("src/models/landmarks_test.txt", "w")
-landmark_db = processVideoPerFrame(video_path)
-landmarkFile.write(landmark_db.to_string())
-landmarkFile.write(f"\n {len(landmark_db)}")
-landmarkFile.close()
+landmark_file = open(landmark_path, "w")
+landmark_db = process_video_per_frame(video_path)
+landmark_file.write(landmark_db.to_string())
+landmark_file.write(f"\n {len(landmark_db)}")
+landmark_file.close()

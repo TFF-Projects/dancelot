@@ -1,6 +1,6 @@
 // rt-detect-ctrl.js
 const fs = require("fs");
-const filePath = "src/models/realtime_landmarks.txt"
+const filePath = "src/models/realtime_landmarks.json"
 
 module.exports.getDetectPage = (req, res) => {
     res.render("rt-detect");

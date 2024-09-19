@@ -131,19 +131,21 @@ async function predictWebcam() {
                 drawingUtils.drawConnectors(landmark_set, PoseLandmarker.POSE_CONNECTIONS);
             }
 
-            let player1_landmarks = result.landmarks[0];
-            let landmark_count = 0;
-            for (const landmark of player1_landmarks) {
-                let landmarks_data = {
-                    "system-time": video.currentTime,
-                    "landmark": landmark_count,
-                    "x": landmark.x,
-                    "y": landmark.y,
-                    "z": landmark.z,
-                    "visibility": landmark.visibility
-                };
+            if (result.landmarks.length != 0) {
+                let player1_landmarks = result.landmarks[0];
+                let landmark_count = 0;
+                for (const landmark of player1_landmarks) {
+                    let landmarks_data = {
+                        "system-time": video.currentTime,
+                        "landmark": landmark_count,
+                        "x": landmark.x,
+                        "y": landmark.y,
+                        "z": landmark.z,
+                        "visibility": landmark.visibility
+                    };
                 accumulatedLandmarks.push(landmarks_data);
                 landmark_count += 1;
+                }
             }
             canvasCtx.restore();
         });
