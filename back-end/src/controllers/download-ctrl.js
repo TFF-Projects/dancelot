@@ -26,15 +26,49 @@ function runPythonPoseSeq(scriptPath, args, callback) {
     });
 }
 
+const downloadVideo = (URL, retries = 3) => {
+    return new Promise(async (resolve, reject) => {
+        const video = ytdl(URL, { format: 'mp4' });
+        const stream = fs.createWriteStream("src/models/videos/video.mp4");
+
+        // Handle download progress
+        video.on('progress', (chunkLength, downloaded, total) => {
+            const percent = (downloaded / total * 100).toFixed(2);
+            console.log(`Downloaded ${percent}% of the video.`);
+        });
+
+        video.pipe(stream);
+
+        video.on('end', () => resolve("Download completed"));
+        video.on('error', async (err) => {
+            if (retries > 0) {
+                console.log(`Retrying download... ${retries} attempts left`);
+                await downloadVideo(URL, retries - 1);
+            } else {
+                reject(`Failed to download after multiple attempts: ${err.message}`);
+            }
+        });
+    });
+};
+
 module.exports.getDownload = async (req, res) => {
+    res.setHeader('Content-Type', 'text/plain'); // Set content-type to plain text
+    res.setHeader('Cache-Control', 'no-cache'); // Disable caching
+    res.flushHeaders(); // Flush the headers to ensure the client starts receiving the response
+
+    progress = 0;
+
     var URL = req.query.URL;
 
-    ytdl(URL, {
-        format: "mp4"
-    }).pipe(fs.createWriteStream("src/models/videos/video.mp4"));
+    try {
+        await downloadVideo(URL);
+        console.log(`Downloaded ${URL}!`);
+    } catch (error) {
+        res.status(500).send(error);
+    }
 
     //res.send(`Downloaded ${URL}!`);
-    await sleep(5000);
+    await sleep(30000);
 
     runPythonPoseSeq("src/pose-sequence.py", [], (err, result) => {
         if (err) {
