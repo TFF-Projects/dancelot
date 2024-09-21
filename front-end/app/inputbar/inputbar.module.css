@@ -32,3 +32,7 @@
     background: #dd2e44;
 }
 
+.progressbar:not([value]) {
+    color: #dd2e44;
+    background: #f4f4f4;
+}

@@ -52,12 +52,6 @@ const downloadVideo = (URL, retries = 3) => {
 };
 
 module.exports.getDownload = async (req, res) => {
-    res.setHeader('Content-Type', 'text/plain'); // Set content-type to plain text
-    res.setHeader('Cache-Control', 'no-cache'); // Disable caching
-    res.flushHeaders(); // Flush the headers to ensure the client starts receiving the response
-
-    progress = 0;
-
     var URL = req.query.URL;
 
     try {
@@ -74,7 +68,7 @@ module.exports.getDownload = async (req, res) => {
         if (err) {
             res.status(500).send(err);
         } else {
-            res.send("Pose sequence generation success!");
+            res.status(200).send("Pose sequence generation success!");
         }
     });
 };

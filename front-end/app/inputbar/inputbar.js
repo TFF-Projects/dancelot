@@ -15,18 +15,17 @@ export default function InputBar() {
             URL: "",
         });
 
-    function sendURL() {
+    async function sendURL() {
         console.log(`URL: ${fieldDict.URL}`);
         setDisplayProgress(true);
         // call server api function to download from url
         // window.location.href = `http://localhost:3000/download?URL=${fieldDict.URL}`;
-        axios.get(`http://localhost:4000/download?URL=${fieldDict.URL}`).then(function (response) {
-            router.push(`/play?URL=${fieldDict.URL}`);
-        })
+        axios.get(`http://localhost:4000/download?URL=${fieldDict.URL}`);
+        router.push(`/play?URL=${fieldDict.URL}`);
     }
 
     if (displayProgress) {
-            return (<div><progress>Started!</progress></div>);
+            return (<div><progress className={styles.progressbar}></progress><h5>Downloading...</h5></div>);
     } else {
         return(
             <div>
